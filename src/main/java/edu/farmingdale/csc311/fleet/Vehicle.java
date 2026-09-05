@@ -54,8 +54,8 @@ public abstract class Vehicle implements Honkable {
     private final FuelType fuelType;
     private double fuelCapacity;
 
-    private static String validateText(String fieldName, String value){
-        if( value == null || value.isBlank()){
+    private static String validateText(String fieldName, String value) {
+        if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(fieldName + ": " + value);
         }
         return value.trim();
@@ -65,20 +65,20 @@ public abstract class Vehicle implements Honkable {
 
     protected Vehicle(String vin, String make, String model, int year, String color,
                       int wheels, double engineSize, FuelType fuelType, double fuelCapacity) {
-        if(vin == null || vin.trim().length() != 17){
+        if (vin == null || vin.trim().length() != 17) {
             throw new IllegalArgumentException("vin: " + vin);
         }
 
 
-        if(fuelType == null){
+        if (fuelType == null) {
             throw new IllegalArgumentException("fuelType: " + fuelType);
         }
-        if(fuelType.hasEngine()){
-            if(engineSize <= 0.0 || engineSize > 8.5){
+        if (fuelType.hasEngine()) {
+            if (engineSize <= 0.0 || engineSize > 8.5) {
                 throw new IllegalArgumentException("engineSize: " + engineSize);
             }
-        }else{
-            if(engineSize != 0.0){
+        } else {
+            if (engineSize != 0.0) {
                 throw new IllegalArgumentException("engineSize: " + engineSize);
             }
         }
@@ -121,7 +121,7 @@ public abstract class Vehicle implements Honkable {
     }
 
     public void setYear(int year) {
-        if(year < 1900 || year > 2100){
+        if (year < 1900 || year > 2100) {
             throw new IllegalArgumentException("year: " + year);
         }
         this.year = year;
@@ -140,7 +140,7 @@ public abstract class Vehicle implements Honkable {
     }
 
     public void setWheels(int wheels) {
-        if(wheels < 2 || wheels > 18){
+        if (wheels < 2 || wheels > 18) {
             throw new IllegalArgumentException("wheels: " + wheels);
         }
         this.wheels = wheels;
@@ -159,7 +159,7 @@ public abstract class Vehicle implements Honkable {
     }
 
     public void setFuelCapacity(double fuelCapacity) {
-        if(fuelCapacity <= 0.0){
+        if (fuelCapacity <= 0.0) {
             throw new IllegalArgumentException("fuelCapacity: " + fuelCapacity);
         }
         this.fuelCapacity = fuelCapacity;
@@ -185,15 +185,17 @@ public abstract class Vehicle implements Honkable {
 
     @Override
     public void honk(int times) {
-       if(times < 1){
-           throw new IllegalArgumentException("times: " + times);
-       }
-       for(int i = 0; i < times; i++){
-           System.out.println(hornSound());
-       }
+        if (times < 1) {
+            throw new IllegalArgumentException("times: " + times);
+        }
+        for (int i = 0; i < times; i++) {
+            System.out.println(hornSound());
+        }
     }
 
-    /** Subclasses answer these two. Do not write bodies here. */
+    /**
+     * Subclasses answer these two. Do not write bodies here.
+     */
     public abstract String category();
 
     public abstract double rangeInMiles();
@@ -217,16 +219,34 @@ public abstract class Vehicle implements Honkable {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("TODO-05");
+        String engineText;
+
+        if (fuelType.hasEngine()) {
+            engineText = String.format("%.1fL", engineSize);
+        } else {
+            engineText = "n/a";
+        }
+        return String.format("%d %s %s [VIN=%s] color=%s, wheels=%d, engine=%s, fuel=%s, capacity=%.1f %s",
+                year, make, model, vin, color, wheels, engineText, fuelType.getLabel(), fuelCapacity, fuelType.getUnit());
     }
 
     @Override
     public boolean equals(Object other) {
-        throw new UnsupportedOperationException("TODO-05");
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Vehicle)) {
+            return false;
+        }
+
+        Vehicle vehicle = (Vehicle) other;
+
+        return vin.equals(vehicle.vin);
     }
 
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException("TODO-05");
+        return vin.hashCode();
     }
 }
